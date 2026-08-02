@@ -85,8 +85,12 @@ Falha no webhook **não bloqueia** o lead: o contato via WhatsApp acontece de qu
 ## Deploy
 
 Feito para a Vercel: importe o repositório, cadastre as variáveis de ambiente e aponte o
-domínio. Depois do domínio definido, atualize `site.url` em `src/lib/site.ts` — ele alimenta
-canonical, Open Graph e o JSON-LD.
+domínio.
+
+A URL pública se resolve sozinha (`resolverUrl()` em `src/lib/site.ts`): em produção usa o
+domínio da Vercel, em desenvolvimento usa `localhost`. Quando o domínio definitivo estiver
+apontado, defina `NEXT_PUBLIC_SITE_URL` na Vercel — canonical, Open Graph e JSON-LD passam a
+usá-lo sem precisar mexer no código.
 
 ## Pendências antes de subir campanha
 
@@ -97,7 +101,7 @@ Estão marcadas com `TODO` em `src/lib/site.ts`:
 - [ ] Depoimentos reais (nome, empresa, cargo)
 - [ ] E-mail comercial da marca
 - [ ] Perfis sociais da marca (hoje apontam para os pessoais)
-- [ ] Domínio final
+- [ ] Domínio final (definir `NEXT_PUBLIC_SITE_URL` na Vercel)
 - [ ] CNPJ e política de privacidade no rodapé
 - [ ] IDs de Pixel / GA4 / GTM
 

@@ -6,13 +6,32 @@
  * com a Flecha Performance antes de subir a página para produção.
  */
 
+/**
+ * Endereço público do site. Alimenta canonical, Open Graph e JSON-LD —
+ * se apontar para um domínio que não existe, a prévia de compartilhamento quebra.
+ *
+ * 1. NEXT_PUBLIC_SITE_URL — defina quando o domínio definitivo estiver no ar
+ * 2. Domínio de produção da Vercel (flecha-lp.vercel.app), preenchido sozinho
+ * 3. Localhost, em desenvolvimento
+ */
+function resolverUrl() {
+  const explicito = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicito) return explicito.replace(/\/$/, "");
+
+  const vercel =
+    process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
+    process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercel) return `https://${vercel}`;
+
+  return "http://localhost:3000";
+}
+
 export const site = {
   nome: "Flecha Performance",
   tagline: "Gestão de tráfego pago para o mercado imobiliário",
   descricao:
     "A Flecha Performance estrutura e gerencia campanhas de tráfego pago para imobiliárias, incorporadoras e corretores. Leads qualificados, custo por venda sob controle e previsibilidade de agenda.",
-  // TODO: confirmar domínio final
-  url: "https://flechaperformance.com.br",
+  url: resolverUrl(),
 
   contato: {
     // Número obtido no Linktree oficial (linktr.ee/leonardocaires)

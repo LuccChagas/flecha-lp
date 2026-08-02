@@ -30,7 +30,7 @@ export default async function OpenGraphImage() {
           fontFamily: "Sansation",
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* Satori renderiza <img>; next/image não se aplica aqui */}
         <img src={simboloUri} alt="" width={104} height={104} />
 
         <div style={{ display: "flex", flexDirection: "column" }}>
