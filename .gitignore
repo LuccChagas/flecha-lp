@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# Brand kit original (146 MB de .ai/.cdr/.pdf) — fonte de referência, não é
+# usado em build. O que a página consome já está em public/brand e src/fonts.
+/brand/
 
 # vercel
 .vercel

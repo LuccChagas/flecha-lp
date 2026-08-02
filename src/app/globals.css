@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------ */
+/* Tokens da marca — Brand Kit Flecha Performance                      */
+/* Azul petróleo #003E52 · Cinza #8191A0 · Off White #F0EDE4           */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-petrol-950: #001a24;
+  --color-petrol-900: #002532;
+  --color-petrol-800: #003043;
+  --color-petrol-700: #003e52;
+  --color-petrol-600: #054f66;
+  --color-petrol-500: #0b647f;
+
+  --color-steel-700: #5c6b7a;
+  --color-steel-600: #6d7d8d;
+  --color-steel-500: #8191a0;
+  --color-steel-400: #9dabb8;
+  --color-steel-300: #bcc6cf;
+
+  --color-bone-50: #faf9f6;
+  --color-bone-100: #f0ede4;
+  --color-bone-200: #e2ddd0;
+  --color-bone-300: #cfc8b7;
+
+  --font-display: var(--font-pirulen), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-sansation), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-flecha: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-petrol-950);
+    color: var(--color-bone-100);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* O header é fixo (5rem). Sem isso, o título da seção fica escondido
+     atrás dele ao navegar pelos links de âncora. */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  ::selection {
+    background-color: var(--color-steel-500);
+    color: var(--color-petrol-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-steel-400);
+    outline-offset: 3px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Título de display: Pirulen é caixa-alta, larga e técnica.
+     Pede tracking apertado em tamanho grande e leading curto. */
+  .display {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.06;
+    font-weight: 400;
+  }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.6875rem;
+    /* Leading folgado: em telas estreitas o eyebrow quebra em duas linhas */
+    line-height: 1.5;
+  }
+
+  /* Malha de flechas derivada do pattern do brand kit */
+  .flecha-grid {
+    background-image: url("/brand/pattern-chevron.svg");
+    background-size: 120px 60px;
+  }
+}
+
+/* Revelação em scroll — sem dependência de biblioteca de animação */
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.7s var(--ease-flecha),
+      transform 0.7s var(--ease-flecha);
+  }
+
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }

@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flecha Performance — Landing Page
 
-## Getting Started
+Landing page institucional e de captação da **Flecha Performance**, gestora de tráfego pago
+para o mercado imobiliário.
 
-First, run the development server:
+A página é da **marca**, não da pessoa: o Leonardo aparece como operação e autoridade,
+nunca como protagonista.
+
+## Stack
+
+- Next.js 16 (App Router) + React 19
+- TypeScript
+- Tailwind CSS v4 (tokens da marca em `src/app/globals.css`)
+- Fontes da marca auto-hospedadas via `next/font/local`
+
+## Rodando
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # opcional
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build de produção:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build && npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Onde mexer
 
-## Learn More
+| O que | Arquivo |
+| --- | --- |
+| **Todos os textos, números, contatos e cases** | `src/lib/site.ts` |
+| Cores, tipografia e tokens | `src/app/globals.css` (bloco `@theme`) |
+| Ordem das seções | `src/app/page.tsx` |
+| Seções individuais | `src/components/*.tsx` |
+| Destino dos leads | `src/app/api/lead/route.ts` |
 
-To learn more about Next.js, take a look at the following resources:
+`src/lib/site.ts` é a fonte única de verdade. Trocar um número de case ou uma pergunta do
+FAQ não exige tocar em nenhum componente.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Identidade visual
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Extraída do brand kit oficial (pasta `brand/`):
 
-## Deploy on Vercel
+| Cor | Hex | Uso |
+| --- | --- | --- |
+| Azul petróleo | `#003E52` | Cor primária, fundos escuros, botões em fundo claro |
+| Cinza | `#8191A0` | Texto secundário, bordas, detalhes |
+| Off white | `#F0EDE4` | Fundos claros, texto sobre petróleo, botões primários |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Tipografia: **Pirulen** (display, caixa alta) e **Sansation** (texto corrido) —
+convertidas para `.woff2` em `src/fonts/` (72 KB no total, contra 284 KB dos originais).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O padrão de flechas do brand kit virou a textura `public/brand/pattern-chevron.svg`,
+usada como camada sutil nas seções escuras.
+
+## Rastreamento
+
+Preencha no `.env.local` — cada bloco só é injetado se o ID existir:
+
+```
+NEXT_PUBLIC_META_PIXEL_ID=
+NEXT_PUBLIC_GA4_ID=
+NEXT_PUBLIC_GTM_ID=
+```
+
+Eventos disparados automaticamente (`src/lib/track.ts`, envia para Pixel, GA4 e dataLayer):
+
+- `Contact` — todo clique em CTA de WhatsApp, com o parâmetro `origem`
+  (`nav`, `hero`, `metodo`, `botao-flutuante`, …)
+- `Lead` — envio do formulário, com `perfil` e `verba`
+
+## Formulário de captação
+
+O envio faz duas coisas:
+
+1. `POST /api/lead` — encaminha para `LEAD_WEBHOOK_URL` (CRM, n8n, Make, Zapier).
+   Sem a variável, o lead é apenas registrado no log do servidor.
+2. Abre o WhatsApp com a mensagem já montada com os dados preenchidos.
+
+Falha no webhook **não bloqueia** o lead: o contato via WhatsApp acontece de qualquer forma.
+
+## Deploy
+
+Feito para a Vercel: importe o repositório, cadastre as variáveis de ambiente e aponte o
+domínio. Depois do domínio definido, atualize `site.url` em `src/lib/site.ts` — ele alimenta
+canonical, Open Graph e o JSON-LD.
+
+## Pendências antes de subir campanha
+
+Estão marcadas com `TODO` em `src/lib/site.ts`:
+
+- [ ] Métricas do hero (mídia gerenciada, leads, clientes, ROAS)
+- [ ] Cases reais, com autorização de divulgação
+- [ ] Depoimentos reais (nome, empresa, cargo)
+- [ ] E-mail comercial da marca
+- [ ] Perfis sociais da marca (hoje apontam para os pessoais)
+- [ ] Domínio final
+- [ ] CNPJ e política de privacidade no rodapé
+- [ ] IDs de Pixel / GA4 / GTM
+
+Os números que estão na página hoje são **placeholders plausíveis** para dar forma ao layout.
+Não suba tráfego pago com eles.
